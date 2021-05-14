@@ -1,0 +1,59 @@
+import React, {useState} from 'react'
+import Draggable from 'react-draggable';
+import useWindowSize from "../utils/useWindowSize";
+
+class ArenaBlock extends React.Component {
+constructor(props) {
+   super(props);
+   this.state = {
+     position: { x: 0, y: 0 },
+     window: useWindowSize()
+   };
+   this.handleDrag = this.handleDrag.bind(this)
+
+ }
+
+
+ handleDrag(e, data) {
+    this.setState({position:{ x: data.x, y: data.y }})
+  };
+
+
+  render() {
+    const block=this.props.block;
+    const blockContent = ()=> {
+
+      if (block.class=="Image") {
+        return (
+          <img src={block.image.original.url} draggable="false"/>
+        );
+      } else if (block.class=="Text") {
+        return (
+          <div>{block.content}</div>
+        );
+      } else if (block.class=="Link") {
+        return (
+          <div>
+          <img src= {block.image.display.url} draggable="false"/>
+          <a href={block.source.url} target="_blank">{block.source.url}</a>
+          </div>
+        );
+      }
+    }
+
+    return(
+      <Draggable
+      axis="both"
+      handle=""
+      position={null}
+      scale={1}
+      onDrag={this.handleDrag}>
+      <div className="block"  style={{ left: `${this.state.position.x * 100}%`, top: `${this.state.position.y * 100}%` }}>
+      {blockContent()}
+      </div>
+      </Draggable>
+    )
+  }
+}
+
+export default ArenaBlock;
